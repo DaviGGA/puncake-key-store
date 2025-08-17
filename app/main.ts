@@ -7,11 +7,10 @@ const server = net.createServer((socket: net.Socket) => {
   socket.on("data", data => {
     const command = data.toString();
 
-    console.log("COMMAND", command)
+    console.log("COMMAND", command);
 
     if (command === "PING") {
       socket.write("+PONG\r\n");
-      return;
     }
 
   })
