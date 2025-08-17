@@ -14,8 +14,6 @@ const server = net.createServer((socket: net.Socket) => {
       return;
     }
 
-    socket.write("Oops!");
-
   })
 
 });
