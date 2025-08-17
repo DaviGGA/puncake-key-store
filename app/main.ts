@@ -4,9 +4,18 @@ import * as net from "net";
 console.log("Logs from your program will appear here!");
 
 const server = net.createServer((socket: net.Socket) => {
-  socket.write("+PONG\r\n");
+
+  socket.on("data", data => {
+    const input = data.toString().trim();
+    const parsedCommand = input.split("\\n");
+
+    parsedCommand.forEach(command => {
+      if (command === "PING") socket.write("+PONG\r\n");
+    })
+  })
+
 });
 
-server.listen(6379, "127.0.0.1");
+server.listen(6380, "127.0.0.1");
 
 
