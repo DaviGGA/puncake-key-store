@@ -7,8 +7,6 @@ const server = net.createServer((socket: net.Socket) => {
   socket.on("data", data => {
     const command = data.toString();
 
-    console.log("COMMAND", command);
-
     if (command === "PING") {
       socket.write("+PONG\r\n");
     }
@@ -19,7 +17,4 @@ const server = net.createServer((socket: net.Socket) => {
 
 server.listen(6379, "127.0.0.1");
 
-const client = net.connect({port: 6379}, () => {
-  client.write("PING");
-})
 
