@@ -24,7 +24,3 @@ const client = net.connect({port: 6379}, () => {
   client.write("PING");
 })
 
-client.on("data", data => {
-  console.log(data.toString("utf-8"));
-})
-
