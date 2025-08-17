@@ -11,6 +11,8 @@ const server = net.createServer((socket: net.Socket) => {
       .split("\n")
       .filter(Boolean);
 
+    console.log("PARSED", parsedCommand)
+
     parsedCommand.forEach(command => {
       if (command === "PING") socket.write("+PONG\r\n");
     })
