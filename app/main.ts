@@ -18,9 +18,9 @@ const server = net.createServer((socket: net.Socket) => {
 
 });
 
-server.listen(6380, "127.0.0.1");
+server.listen(6379, "127.0.0.1");
 
-const client = net.connect({port: 6380}, () => {
+const client = net.connect({port: 6379}, () => {
   const command = prompt("");
   client.write(command!);
 })
