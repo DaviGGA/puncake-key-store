@@ -4,15 +4,7 @@ import * as net from "net";
 console.log("Logs from your program will appear here!");
 
 const server = net.createServer((socket: net.Socket) => {
-  socket.on("data", data => {
-    const command = data.toString();
-
-    if (command === "PING") {
-      socket.write("+PONG\r\n");
-    }
-
-  })
-
+  socket.write("+PONG\r\n");
 });
 
 server.listen(6379, "127.0.0.1");
