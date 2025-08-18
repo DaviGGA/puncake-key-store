@@ -1,47 +1,45 @@
-// function Resp(command: string) {
-//   const commands: string[] = [];
+export function Resp(command: string) {
+  
+  switch(command.charAt(0)) {
+    case "*":
+      return ArrayResp(command)
+    default:
+      return command;
+  }
+}
 
-//   const splittedCommands = command.split("\r\n");
+//*1\r\n$4\r\nPING\r\n
+function ArrayResp(command: string) {
+  const arraySize = getArraySize(command);
 
-//   splittedCommands.forEach(splittedComand => {
+  const commands: string[] = new Array(arraySize);
 
-//   })
+  let foo = getStringSizeAndPos(command);
+  
+  for (let i = 0; i < arraySize; i++) {
+    const { size, pos } = foo;
+    const commandString = command.slice(pos, pos + size);
+    commands[i] = commandString;
+    foo = getStringSizeAndPos(command, pos);
+  }
 
-// }
+  return commands;
+}
 
-// function commandType(value: string) {
-//   switch (value.at(0)) {
-//     case "*":
-//       const arraySize = parseInt(value.slice(1));
-//   }
-// }
+function getArraySize(command: string) {
+  const asteriskPos = command.indexOf("*");
+  const carriagePos = command.indexOf("\r\n");
+  return parseInt(command.slice(asteriskPos + 1, carriagePos))
+}
 
-// //*1\r\n$4\r\nPING\r\n
-// // *2\r\n*2\r\n:1\r\n:2\r\n+OK\r\n
-// function ArrayResp(vales: string[]) {
+function getStringSizeAndPos(command: string, startPos: number = 0) {
+  const dollarSignPos = command.indexOf("$", startPos);
+  const carriagePos = command.indexOf("\r\n", dollarSignPos);
+  return {
+    size: parseInt(command.slice(dollarSignPos + 1, carriagePos)),
+    pos: carriagePos + 2
+  }
+}
 
-// }
-
-// function getArraySize(command: string) {
-//   const asteriskPos = command.indexOf("*");
-//   const carriagePos = command.indexOf("\r\n");
-//   return parseInt(command.slice(asteriskPos + 1, carriagePos))
-// }
-
-// function getStringSizeAndPos(command: string, startPos: number = 0) {
-//   const dollarSignPos = command.indexOf("$", startPos);
-//   const carriagePos = command.indexOf("\r\n", dollarSignPos);
-//   return {
-//     size: parseInt(command.slice(dollarSignPos + 1, carriagePos)),
-//     pos: carriagePos + 2
-//   }
-// }
-
-// //console.log(ArrayResp("*1\r\n$4\r\nPING\r\n"))
-// ArrayResp("*2\r\n$3\r\nSET\r\n$5\r\nmykey\r\n");
-// console.log("*2\r\n*2\r\n:1\r\n:2\r\n+OK\r\n".split("\r\n"));
-// function bulkString(command: string) {
-
-// }
 
 

@@ -1,17 +1,15 @@
 import * as net from "net";
-
-// You can use print statements as follows for debugging, they'll be visible when running tests.
-console.log("Logs from your program will appear here!");
+import { Resp } from "./packages/Resp"
 
 const server = net.createServer((socket: net.Socket) => {
 
   socket.on("data", data => {
-    const parsedCommand = data
-      .toString()
-      .split("\n")
-      .filter(Boolean);
+    const parsedCommand = Resp(data.toString());
 
-    console.log("PARSED", parsedCommand)
+    if (typeof parsedCommand === "string") {
+      if (parsedCommand === "PING") socket.write("+PONG\r\n");
+      return;
+    }
 
     parsedCommand.forEach(command => {
       if (command === "PING") socket.write("+PONG\r\n");
