@@ -41,9 +41,6 @@ function getStringSizeAndPos(command: string, startPos: number = 0) {
   }
 }
 
-export function bulkString(value: string) {
-  return `$${value.length}\r\n${value}\r\n`
-}
 
 
 

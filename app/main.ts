@@ -2,6 +2,8 @@ import * as net from "net";
 import { Resp } from "./packages/Resp"
 import { ping } from "./packages/commands/ping";
 import { echo } from "./packages/commands/echo";
+import { get } from "./packages/commands/get";
+import { set } from "./packages/commands/set";
 
 const server = net.createServer((socket: net.Socket) => {
 
@@ -23,6 +25,24 @@ const server = net.createServer((socket: net.Socket) => {
         continue;
       }
 
+      if (input === "GET") {
+        const key = parsedInput[i + 1];
+        const value = get(key);
+        socket.write(value);
+        i++;
+        continue; 
+      }
+
+      if (input === "SET") {
+        const key = parsedInput[i + 1];
+        const value = parsedInput[i + 2];
+        const setResult = set(key, value);
+        socket.write(setResult);
+        i++;
+        continue; 
+      }
+
+
 
     }
 
@@ -30,6 +50,6 @@ const server = net.createServer((socket: net.Socket) => {
 
 });
 
-server.listen(6379, "127.0.0.1");
+server.listen(6380, "127.0.0.1");
 
 

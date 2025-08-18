@@ -1,3 +1,5 @@
+import { simpleString } from "../Resp/data-types";
+
 export function ping() {
-  return "+PONG\r\n"
+  return simpleString("PONG");
 }
