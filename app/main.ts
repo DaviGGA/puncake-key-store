@@ -1,19 +1,31 @@
 import * as net from "net";
 import { Resp } from "./packages/Resp"
+import { ping } from "./packages/commands/ping";
+import { echo } from "./packages/commands/echo";
 
 const server = net.createServer((socket: net.Socket) => {
 
   socket.on("data", data => {
-    const parsedCommand = Resp(data.toString());
+    const parsedInput = Resp(data.toString());
 
-    if (typeof parsedCommand === "string") {
-      if (parsedCommand === "PING") socket.write("+PONG\r\n");
-      return;
+    for (let i = 0; i < parsedInput.length; i++) {
+      const input = parsedInput[i];
+
+      if (input === "PING") {
+        socket.write(ping());
+        continue 
+      }
+
+      if(input === "ECHO") {
+        const echoValue = parsedInput[i + 1];
+        socket.write(echo(echoValue));
+        i++;
+        continue;
+      }
+
+
     }
 
-    parsedCommand.forEach(command => {
-      if (command === "PING") socket.write("+PONG\r\n");
-    })
   })
 
 });

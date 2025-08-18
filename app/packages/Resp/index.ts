@@ -4,11 +4,10 @@ export function Resp(command: string) {
     case "*":
       return ArrayResp(command)
     default:
-      return command;
+      return [command];
   }
 }
 
-//*1\r\n$4\r\nPING\r\n
 function ArrayResp(command: string) {
   const arraySize = getArraySize(command);
 
@@ -19,6 +18,7 @@ function ArrayResp(command: string) {
   for (let i = 0; i < arraySize; i++) {
     const { size, pos } = foo;
     const commandString = command.slice(pos, pos + size);
+
     commands[i] = commandString;
     foo = getStringSizeAndPos(command, pos);
   }
@@ -39,6 +39,10 @@ function getStringSizeAndPos(command: string, startPos: number = 0) {
     size: parseInt(command.slice(dollarSignPos + 1, carriagePos)),
     pos: carriagePos + 2
   }
+}
+
+export function bulkString(value: string) {
+  return `$${value.length}\r\n${value}\r\n`
 }
 
 
