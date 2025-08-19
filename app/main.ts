@@ -38,7 +38,7 @@ const server = net.createServer((socket: net.Socket) => {
         const value = parsedInput[i + 2];
         const hasPX = parsedInput[i + 3] === "px";
         const expiryTime = hasPX ? 
-          parseInt(parsedInput[i + 4]) : -1;
+          parseInt(parsedInput[i + 4]) : 0;
 
         const setResult = set(key, value, expiryTime);
         socket.write(setResult);
