@@ -1,5 +1,21 @@
-type DbValue = { value: string }
+type DbValue = { value: string, expiryTime: number}
 
 const db: Map<string, DbValue> = new Map();
 
-export default db;
+function set(key: string, value: string, expiryTime: number) {
+  db.set(key, {value, expiryTime: Date.now() + expiryTime})
+}
+
+function get(key: string) {
+  const result = db.get(key);
+
+  if(!result) return undefined;
+  if(result.expiryTime == -1) return result.value;
+
+  return result.expiryTime >= Date.now() ?
+    result.value : undefined
+}
+
+const MemoryStorage = { set, get }
+
+export default MemoryStorage;

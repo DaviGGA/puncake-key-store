@@ -36,9 +36,15 @@ const server = net.createServer((socket: net.Socket) => {
       if (input === "SET") {
         const key = parsedInput[i + 1];
         const value = parsedInput[i + 2];
-        const setResult = set(key, value);
+        const hasPX = parsedInput[i + 3] === "px";
+        const expiryTime = hasPX ? 
+          parseInt(parsedInput[i + 4]) : -1;
+
+        const setResult = set(key, value, expiryTime);
         socket.write(setResult);
-        i++;
+        
+        i += hasPX ? 3 : 1
+
         continue; 
       }
 
@@ -50,6 +56,6 @@ const server = net.createServer((socket: net.Socket) => {
 
 });
 
-server.listen(6379, "127.0.0.1");
+server.listen(6380, "127.0.0.1");
 
 
