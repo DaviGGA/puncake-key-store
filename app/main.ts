@@ -10,6 +10,8 @@ const server = net.createServer((socket: net.Socket) => {
   socket.on("data", data => {
     const parsedInput = Resp(data.toString());
 
+    console.log("INPUT", parsedInput);
+
     for (let i = 0; i < parsedInput.length; i++) {
       const input = parsedInput[i];
 
@@ -55,6 +57,7 @@ const server = net.createServer((socket: net.Socket) => {
   })
 
 });
+
 
 server.listen(6379, "127.0.0.1");
 
