@@ -32,7 +32,7 @@ function rpush(key: string, values: string[]) {
       type: "list"
     })
 
-    return 1;
+    return values.length;
   }
 
   values.forEach(value => {

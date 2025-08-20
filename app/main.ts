@@ -10,6 +10,7 @@ const server = net.createServer((socket: net.Socket) => {
 
   socket.on("data", data => {
     const parsedInput = Resp(data.toString());
+    console.log("INPUT", parsedInput);
 
     for (let i = 0; i < parsedInput.length; i++) {
       const input = parsedInput[i];
@@ -52,6 +53,7 @@ const server = net.createServer((socket: net.Socket) => {
       if (input === "RPUSH") {
         const key = parsedInput[i + 1];
         const value = parsedInput.slice(i + 2);
+        console.log("VALUE", value);
         socket.write(rpush(key, value));
         i += 2;
       }
