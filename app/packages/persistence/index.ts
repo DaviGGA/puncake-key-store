@@ -9,10 +9,7 @@ type Values = StringValue | ListValue
 const db: Map<string, Values> = new Map();
 
 function set(key: string, value: string, expiryTime: number) {
-  db.set(key, {
-    value, 
-    expiryTime: expiryTime && Date.now() + expiryTime, 
-    type: "string"})
+  db.set(key, createStringValue(value, expiryTime))
 }
 
 function get(key: string) {
@@ -25,21 +22,23 @@ function get(key: string) {
     result.value : undefined
 }
 
-function rpush(key: string, value: string) {
+function rpush(key: string, values: string[]) {
   const result = db.get(key) as ListValue | undefined;
 
   if(!result) {
     db.set(key, {
-      length: 1,
-      list: [{ value, expiryTime: 0, type: "string" }],
+      length: values.length,
+      list: values.map(createStringValue),
       type: "list"
     })
 
     return 1;
   }
 
-  result.length++;
-  result.list.push({ value, expiryTime: 0, type: "string" });
+  values.forEach(value => {
+    result.length++;
+    result.list.push(createStringValue(value));
+  })
 
   db.set(key, result);
   return result.length;
@@ -48,6 +47,9 @@ function rpush(key: string, value: string) {
 function flush() {
   db.clear()
 }
+
+const createStringValue = (value: string, expiryTime: number = 0): StringValue =>
+  ({value, expiryTime: expiryTime && Date.now() + expiryTime, type: "string"})
 
 const MemoryStorage = { set, get, flush, rpush }
 

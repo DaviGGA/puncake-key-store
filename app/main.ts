@@ -51,7 +51,7 @@ const server = net.createServer((socket: net.Socket) => {
 
       if (input === "RPUSH") {
         const key = parsedInput[i + 1];
-        const value = parsedInput[i + 2];
+        const value = parsedInput.slice(i + 2);
         socket.write(rpush(key, value));
         i += 2;
       }
