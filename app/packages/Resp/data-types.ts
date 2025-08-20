@@ -7,3 +7,7 @@ export function bulkString(value: string) {
 export function simpleString(value: string) {
   return `+${value}\r\n`
 }
+
+export function integer(value: string | number) {
+  return `:${value}\r\n`
+}

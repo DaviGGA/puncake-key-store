@@ -4,13 +4,12 @@ import { ping } from "./packages/commands/ping";
 import { echo } from "./packages/commands/echo";
 import { get } from "./packages/commands/get";
 import { set } from "./packages/commands/set";
+import { rpush } from "./packages/commands/rpush";
 
 const server = net.createServer((socket: net.Socket) => {
 
   socket.on("data", data => {
     const parsedInput = Resp(data.toString());
-
-    console.log("INPUT", parsedInput);
 
     for (let i = 0; i < parsedInput.length; i++) {
       const input = parsedInput[i];
@@ -49,6 +48,14 @@ const server = net.createServer((socket: net.Socket) => {
 
         continue; 
       }
+
+      if (input === "RPUSH") {
+        const key = parsedInput[i + 1];
+        const value = parsedInput[i + 2];
+        socket.write(rpush(key, value));
+        i += 2;
+      }
+
 
 
 
