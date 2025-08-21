@@ -1,33 +1,47 @@
-[![progress-banner](https://backend.codecrafters.io/progress/redis/35c134ac-b912-4c4d-9649-f903736a589b)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
+<div align="center">
+  <img src="./assets/puncake.png" alt="Description" width="300"/>
+</div>
 
-This is a starting point for TypeScript solutions to the
-["Build Your Own Redis" Challenge](https://codecrafters.io/challenges/redis).
+<div align="center">
+   <p style="margin:0; font-size:4em;">Puncake</p>
+   <p style="margin:0; font-size:1.5em; font-weight:normal;margin-bottom:2em">A key-value store based on Redis</p>
+</div>
 
-In this challenge, you'll build a toy Redis clone that's capable of handling
-basic commands like `PING`, `SET` and `GET`. Along the way we'll learn about
-event loops, the Redis protocol and more.
+## Why puncake ???
+- I think giving a name and a face is better than just "redis-clone" or something like that.
+- Bun + pancake
+- Redis is a group of "plates" stacked upon each other, i wanted some food that can also be stacked to represent my implementation
+- It is also a pun!
 
-**Note**: If you're viewing this repo on GitHub, head over to
-[codecrafters.io](https://codecrafters.io) to try the challenge.
+## Requirements
+- bun 1.2.5
 
-# Passing the first stage
+## How to run
 
-The entry point for your Redis implementation is in `app/main.ts`. Study and
-uncomment the relevant code, and push your changes to pass the first stage:
-
-```sh
-git commit -am "pass 1st stage" # any msg
-git push origin master
+### Install dependencies
+```
+$ bun install
 ```
 
-That's all!
+### Run project
+```
+$ bun app/main.ts
+```
 
-# Stage 2 & beyond
+## How to interact
+The application is a socket, you can interact with in many ways
 
-Note: This section is for stages 2 and beyond.
+### Send commands via nc
+Redis uses a protocol called [Redis serialization protocol (RESP)](https://redis.io/docs/latest/develop/reference/protocol-spec/)
 
-1. Ensure you have `bun (1.2)` installed locally
-1. Run `./your_program.sh` to run your Redis server, which is implemented in
-   `app/main.ts`.
-1. Commit your changes and run `git push origin master` to submit your solution
-   to CodeCrafters. Test output will be streamed to your terminal.
+```
+printf '*2\r\n$4\r\nECHO\r\n$3\r\nhey\r\n' | nc localhost <PORT>
+```
+
+### Using redis-cli
+You can also uses [Redis CLI](https://redis.io/docs/latest/develop/tools/cli/) for a more user-friendly interaction
+```
+redis-cli ECHO hey
+```
+
+Based on [Codecrafters Redis challenge](https://app.codecrafters.io/courses/redis)
