@@ -110,4 +110,14 @@ describe("RPUSH LRANGE", () => {
     rpush("foo", ["a","b", "c", "d", "e"]);
     expect(lrange("foo", -3, -2)).toBe(array(["c", "d"]));
   });
+
+  test('Given RPUSH foo a b c d e, when LRANGE foo -5 -1, should return ["a","b", "c", "d", "e"]', () => { 
+    rpush("foo", ["a","b", "c", "d", "e"]);
+    expect(lrange("foo", -5, -1)).toBe(array(["a","b", "c", "d", "e"]));
+  });
+
+  test('Given RPUSH foo a b c d e, when LRANGE foo -5 -2, should return ["a","b", "c", "d"]', () => { 
+    rpush("foo", ["a","b", "c", "d", "e"]);
+    expect(lrange("foo", -5, -2)).toBe(array(["a","b", "c", "d"]));
+  });
 })

@@ -53,14 +53,19 @@ function lrange(key: string, start: number, end: number) {
     (start > end && end >= 0)
   ) return [];
 
-  const startIndex = start >= 0 ?
-    start : result.length + start
+  const startIndex = getStartIndex(start, result.length)
   const endIndex = end >= 0 ?
     end + 1 : result.length + end + 1
 
   return result.list
     .slice(startIndex, endIndex)
     .map(v => v.value);
+}
+
+function getStartIndex(start: number, resultLength: number) {
+  if (resultLength < Math.abs(start)) return 0;
+  return start >= 0 ?
+    start : resultLength + start
 }
 
 function flush() {
