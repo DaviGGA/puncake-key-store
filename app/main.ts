@@ -6,6 +6,7 @@ import { get } from "./packages/commands/get";
 import { set } from "./packages/commands/set";
 import { rpush } from "./packages/commands/rpush";
 import { lrange } from "./packages/commands/lrange";
+import { lpush } from "./packages/commands/lpush";
 
 const server = net.createServer((socket: net.Socket) => {
 
@@ -54,6 +55,13 @@ const server = net.createServer((socket: net.Socket) => {
         const key = parsedInput[i + 1];
         const value = parsedInput.slice(i + 2);
         socket.write(rpush(key, value));
+        i += 2;
+      }
+
+      if (input === "LPUSH") {
+        const key = parsedInput[i + 1];
+        const value = parsedInput.slice(i + 2);
+        socket.write(lpush(key, value));
         i += 2;
       }
 

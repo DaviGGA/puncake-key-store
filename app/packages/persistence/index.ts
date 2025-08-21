@@ -44,6 +44,28 @@ function rpush(key: string, values: string[]) {
   return result.length;
 }
 
+function lpush(key: string, values: string[]) {
+  const result = db.get(key) as ListValue | undefined;
+
+  if(!result) {
+    db.set(key, {
+      length: values.length,
+      list: values.reverse().map(createStringValue),
+      type: "list"
+    })
+
+    return values.length;
+  }
+
+  values.forEach(value => {
+    result.length++;
+    result.list.unshift(createStringValue(value));
+  })
+
+  db.set(key, result);
+  return result.length;
+}
+
 function lrange(key: string, start: number, end: number) {
   const result = db.get(key) as ListValue | undefined;
 
@@ -54,8 +76,7 @@ function lrange(key: string, start: number, end: number) {
   ) return [];
 
   const startIndex = getStartIndex(start, result.length)
-  const endIndex = end >= 0 ?
-    end + 1 : result.length + end + 1
+  const endIndex = getEndIndex(end, result.length);
 
   return result.list
     .slice(startIndex, endIndex)
@@ -68,6 +89,11 @@ function getStartIndex(start: number, resultLength: number) {
     start : resultLength + start
 }
 
+function getEndIndex(end: number, resultLength: number) {
+  return end >= 0 ?
+    end + 1 : resultLength + end + 1
+}
+
 function flush() {
   db.clear()
 }
@@ -75,6 +101,13 @@ function flush() {
 const createStringValue = (value: string, expiryTime: number = 0): StringValue =>
   ({value, expiryTime: expiryTime && Date.now() + expiryTime, type: "string"})
 
-const MemoryStorage = { set, get, flush, rpush, lrange }
+const MemoryStorage = { 
+  set, 
+  get, 
+  flush, 
+  rpush,
+  lpush,
+  lrange
+}
 
 export default MemoryStorage;
