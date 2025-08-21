@@ -20,13 +20,24 @@ describe("RESP", () => {
   });
 
   test('SET foo bar PX 100 should return ["SET", "foo", "bar", "PX", "100"]', () => {
-  expect(Resp("*5\r\n$3\r\nSET\r\n$3\r\nfoo\r\n$3\r\nbar\r\n$2\r\nPX\r\n$3\r\n100\r\n")).toEqual([
-    "SET",
-    "foo",
-    "bar",
-    "PX",
-    "100",
-  ]);
+    expect(Resp("*5\r\n$3\r\nSET\r\n$3\r\nfoo\r\n$3\r\nbar\r\n$2\r\nPX\r\n$3\r\n100\r\n")).toEqual([
+      "SET",
+      "foo",
+      "bar",
+      "PX",
+      "100",
+    ]);
+  })
+
+  test('LRANGE foo 0 2 should return ["LRANGE", "foo", "0", "2"]', () => {
+    expect(Resp("*4\r\n$6\r\nLRANGE\r\n$3\r\nfoo\r\n$1\r\n0\r\n$1\r\n2\r\n")).toEqual([
+      "LRANGE",
+      "foo",
+      "0",
+      "2"
+    ]);
+  });
+
+
 });
 
-})

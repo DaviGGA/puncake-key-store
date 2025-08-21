@@ -11,3 +11,7 @@ export function simpleString(value: string) {
 export function integer(value: string | number) {
   return `:${value}\r\n`
 }
+
+export function array(values: string[]) {
+  return `*${values.length}\r\n${values.map(bulkString).join("")}`
+}

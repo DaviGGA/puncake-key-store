@@ -44,6 +44,20 @@ function rpush(key: string, values: string[]) {
   return result.length;
 }
 
+function lrange(key: string, start: number, end: number) {
+  const result = db.get(key) as ListValue | undefined;
+
+  if (
+    !result ||
+    start >= result.length ||
+    start > end
+  ) return [];
+  
+  return result.list
+    .slice(start, end + 1)
+    .map(v => v.value);
+}
+
 function flush() {
   db.clear()
 }
@@ -51,6 +65,6 @@ function flush() {
 const createStringValue = (value: string, expiryTime: number = 0): StringValue =>
   ({value, expiryTime: expiryTime && Date.now() + expiryTime, type: "string"})
 
-const MemoryStorage = { set, get, flush, rpush }
+const MemoryStorage = { set, get, flush, rpush, lrange }
 
 export default MemoryStorage;

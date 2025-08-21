@@ -5,12 +5,12 @@ import { echo } from "./packages/commands/echo";
 import { get } from "./packages/commands/get";
 import { set } from "./packages/commands/set";
 import { rpush } from "./packages/commands/rpush";
+import { lrange } from "./packages/commands/lrange";
 
 const server = net.createServer((socket: net.Socket) => {
 
   socket.on("data", data => {
     const parsedInput = Resp(data.toString());
-    console.log("INPUT", parsedInput);
 
     for (let i = 0; i < parsedInput.length; i++) {
       const input = parsedInput[i];
@@ -53,9 +53,16 @@ const server = net.createServer((socket: net.Socket) => {
       if (input === "RPUSH") {
         const key = parsedInput[i + 1];
         const value = parsedInput.slice(i + 2);
-        console.log("VALUE", value);
         socket.write(rpush(key, value));
         i += 2;
+      }
+
+      if (input === "LRANGE") {
+        const key = parsedInput[i + 1];
+        const start = parseInt(parsedInput[i + 2]);
+        const end = parseInt(parsedInput[i + 3]);
+        socket.write(lrange(key, start, end));
+        i += 3;
       }
 
 
