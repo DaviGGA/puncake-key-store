@@ -50,11 +50,16 @@ function lrange(key: string, start: number, end: number) {
   if (
     !result ||
     start >= result.length ||
-    start > end
+    (start > end && end >= 0)
   ) return [];
-  
+
+  const startIndex = start >= 0 ?
+    start : result.length + start
+  const endIndex = end >= 0 ?
+    end + 1 : result.length + end + 1
+
   return result.list
-    .slice(start, end + 1)
+    .slice(startIndex, endIndex)
     .map(v => v.value);
 }
 

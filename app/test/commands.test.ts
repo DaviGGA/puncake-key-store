@@ -96,4 +96,18 @@ describe("RPUSH LRANGE", () => {
     expect(lrange("foo", 5, 2)).toBe(array([]))
   })
 
+  test('Given RPUSH foo a b c d e, when LRANGE foo -2 -1, should return ["d", "e"]', () => { 
+    rpush("foo", ["a","b", "c", "d", "e"]);
+    expect(lrange("foo", -2, -1)).toBe(array(["d", "e"]));
+  });
+
+  test('Given RPUSH foo a b c d e, when LRANGE foo 0 -3, should return ["a", "b", "c"]', () => { 
+    rpush("foo", ["a","b", "c", "d", "e"]);
+    expect(lrange("foo", 0, -3)).toBe(array(["a", "b", "c"]));
+  });
+
+  test('Given RPUSH foo a b c d e, when LRANGE foo -3 -2, should return ["c", "d"]', () => { 
+    rpush("foo", ["a","b", "c", "d", "e"]);
+    expect(lrange("foo", -3, -2)).toBe(array(["c", "d"]));
+  });
 })
