@@ -110,12 +110,15 @@ function lpop(key: string, quantity: number) {
     return shiftedValues.map(v => v.value);
   }
 
+  const shiftedValues: StringValue[] = [];
+
   for (let i = 0; i < quantity; i ++) {
-    result.list.shift();
+    const shiftedValue = result.list.shift();
+    shiftedValues.push(shiftedValue!)
     result.length--;
   }
 
-  return result.list.map(v => v.value);
+  return shiftedValues.map(v => v.value);
 }
 
 
