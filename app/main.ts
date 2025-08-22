@@ -83,7 +83,7 @@ const server = net.createServer((socket: net.Socket) => {
 
       if (input === "LPOP") {
         const key = parsedInput[i + 1];
-        const quantity = parseInt(parsedInput[i]) ?? 0;
+        const quantity = parseInt(parsedInput[i]) ?? 1;
         socket.write(lpop(key, quantity));
         i++;
       }
