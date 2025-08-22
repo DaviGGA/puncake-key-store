@@ -7,13 +7,12 @@ import { set } from "./packages/commands/set";
 import { rpush } from "./packages/commands/rpush";
 import { lrange } from "./packages/commands/lrange";
 import { lpush } from "./packages/commands/lpush";
+import { llen } from "./packages/commands/llen";
 
 const server = net.createServer((socket: net.Socket) => {
 
   socket.on("data", data => {
     const parsedInput = Resp(data.toString());
-
-    console.log(parsedInput)
 
     for (let i = 0; i < parsedInput.length; i++) {
       const input = parsedInput[i];
@@ -75,8 +74,11 @@ const server = net.createServer((socket: net.Socket) => {
         i += 3;
       }
 
-
-
+      if (input === "LLEN") {
+        const key = parsedInput[i + 1];
+        socket.write(llen(key));
+        i++;
+      }
 
     }
 
@@ -85,6 +87,6 @@ const server = net.createServer((socket: net.Socket) => {
 });
 
 
-server.listen(6380, "127.0.0.1");
+server.listen(6379, "127.0.0.1");
 
 

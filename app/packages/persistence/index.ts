@@ -83,6 +83,11 @@ function lrange(key: string, start: number, end: number) {
     .map(v => v.value);
 }
 
+function llen(key: string) {
+  const result = db.get(key) as ListValue | undefined;
+  return result?.length ?? 0;
+}
+
 function getStartIndex(start: number, resultLength: number) {
   if (resultLength < Math.abs(start)) return 0;
   return start >= 0 ?
@@ -107,7 +112,8 @@ const MemoryStorage = {
   flush, 
   rpush,
   lpush,
-  lrange
+  lrange,
+  llen
 }
 
 export default MemoryStorage;
