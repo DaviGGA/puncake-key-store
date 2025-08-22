@@ -1,6 +1,5 @@
 type DbTypes = "string" | "list"
 
-
 type StringValue = { value: string, expiryTime: number, type: DbTypes}
 type ListValue = {list: StringValue[], length: number}
 
@@ -83,11 +82,6 @@ function lrange(key: string, start: number, end: number) {
     .map(v => v.value);
 }
 
-function llen(key: string) {
-  const result = db.get(key) as ListValue | undefined;
-  return result?.length ?? 0;
-}
-
 function getStartIndex(start: number, resultLength: number) {
   if (resultLength < Math.abs(start)) return 0;
   return start >= 0 ?
@@ -98,6 +92,33 @@ function getEndIndex(end: number, resultLength: number) {
   return end >= 0 ?
     end + 1 : resultLength + end + 1
 }
+
+function llen(key: string) {
+  const result = db.get(key) as ListValue | undefined;
+  return result?.length ?? 0;
+}
+
+function lpop(key: string, quantity: number) {
+  const result = db.get(key) as ListValue | undefined;
+
+  if (!result || result.length == 0) return [];
+
+  if (quantity >= result.length) {
+    const shiftedValues = result.list.slice();
+    result.length = 0;
+    result.list = [];
+    return shiftedValues.map(v => v.value);
+  }
+
+  for (let i = 0; i < quantity; i ++) {
+    result.list.shift();
+    result.length--;
+  }
+
+  return result.list.map(v => v.value);
+}
+
+
 
 function flush() {
   db.clear()
@@ -113,7 +134,8 @@ const MemoryStorage = {
   rpush,
   lpush,
   lrange,
-  llen
+  llen,
+  lpop
 }
 
 export default MemoryStorage;

@@ -8,6 +8,7 @@ import { rpush } from "./packages/commands/rpush";
 import { lrange } from "./packages/commands/lrange";
 import { lpush } from "./packages/commands/lpush";
 import { llen } from "./packages/commands/llen";
+import { lpop } from "./packages/commands/lpop";
 
 const server = net.createServer((socket: net.Socket) => {
 
@@ -77,6 +78,13 @@ const server = net.createServer((socket: net.Socket) => {
       if (input === "LLEN") {
         const key = parsedInput[i + 1];
         socket.write(llen(key));
+        i++;
+      }
+
+      if (input === "LPOP") {
+        const key = parsedInput[i + 1];
+        const quantity = parseInt(parsedInput[i]) ?? 0;
+        socket.write(lpop(key, quantity));
         i++;
       }
 
