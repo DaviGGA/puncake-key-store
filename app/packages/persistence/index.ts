@@ -121,8 +121,6 @@ function llen(key: string) {
 function lpop(key: string, quantity: number) {
   const result = db.get(key) as ListValue | undefined;
 
-  console.log("LPOP", result)
-
   if (!result || result.length == 0) return [];
 
   if (quantity >= result.length) {
