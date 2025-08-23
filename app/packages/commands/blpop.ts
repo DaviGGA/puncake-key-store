@@ -14,9 +14,7 @@ const toMiliseconds = (s: Seconds) => s * 1000;
 export const blpopListeners: Map<number, any> = new Map();
 
 export async function blpop({key, timeout, socketId}: Blpop): Promise<string> {
-  const parsedTimeout = toMiliseconds(parseInt(timeout));
-
-  console.log("TIMEOUT", parsedTimeout);
+  const parsedTimeout = toMiliseconds(parseFloat(timeout));
 
   const lpopResult = MemoryStorage.lpop(key, 1);
 
