@@ -43,6 +43,8 @@ export async function blpop({key, timeout, socketId}: Blpop): Promise<string> {
   });
 
   const timeoutPromise: Promise<string> = new Promise(resolve => {
+    if (parsedTimeout === 0) return resolve("");
+
     setTimeout(() => {
       const listener = blpopListeners.get(socketId);
       if(!listener) return;
@@ -52,7 +54,8 @@ export async function blpop({key, timeout, socketId}: Blpop): Promise<string> {
     }, parsedTimeout)
   })
 
-return Promise.race([resultPromise, timeoutPromise])
+  return parsedTimeout === 0 ?
+    resultPromise: Promise.race([resultPromise, timeoutPromise])
 
 }
 
