@@ -35,18 +35,12 @@ const server = net.createServer((socket: net.Socket & {socketId?: number}) => {
         return socket.write(get({ key: command[1] }));
 
       if (commandName === "SET") {
+        console.log("SET", command)
         return socket.write(set({
           key: command[1],
           value: command[2],
-          px: command[3]
-        }))
-      }
-
-      if (commandName === "SET") {
-        return socket.write(set({
-          key: command[1],
-          value: command[2],
-          px: command[3]
+          px: command[3],
+          expiryTime: command[4]
         }))
       }
 
