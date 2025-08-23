@@ -69,6 +69,7 @@ const server = net.createServer((socket: net.Socket & {socketId?: number}) => {
       
       if (commandName === "BLPOP") {
         const[_, key, timeout] = command;
+        console.log("COMMAND", command);
         blpop({ key, timeout, socketId: socket.socketId!})
         .then(res => socket.write(res));
         return
@@ -84,6 +85,6 @@ const server = net.createServer((socket: net.Socket & {socketId?: number}) => {
 });
 
 
-server.listen(6379, "127.0.0.1");
+server.listen(6380, "127.0.0.1");
 
 
