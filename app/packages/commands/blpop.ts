@@ -16,7 +16,7 @@ export async function blpop({key, timeout, socketId}: Blpop): Promise<string> {
   const lpopResult = MemoryStorage.lpop(key, 1);
 
   if (lpopResult.length > 0) 
-    return getResult(lpopResult);
+    return getResult(key, lpopResult);
 
 return new Promise(resolve => {
   function onElementAdded(addedKey: string) {
@@ -28,7 +28,7 @@ return new Promise(resolve => {
     blpopListeners.delete(socketId);
     eventEmitter.off("ELEMENT_ADDED", wrappedFn);
     
-    resolve(getResult(lpopResult));
+    resolve(getResult(key, lpopResult));
   }
 
   const wrappedFn = (addedKey: string) => onElementAdded(addedKey);
@@ -40,10 +40,7 @@ return new Promise(resolve => {
 
 }
 
-function getResult (result: string[]) {
-  switch (result.length) {
-    case 1: return bulkString(result[0]);
-    default: return array(result);
-  }
+function getResult (key:string, result: string[]) {
+  return array([key, result[0]])
 }
 
