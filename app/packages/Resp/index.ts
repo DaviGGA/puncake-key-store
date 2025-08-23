@@ -1,11 +1,10 @@
-export function Resp(command: string) {
-  
-  switch(command.charAt(0)) {
-    case "*":
-      return ArrayResp(command)
-    default:
-      return [command];
-  }
+type Commands = string[][];
+type RawString = string;
+
+export function Resp(commands: RawString): Commands {
+  return commands
+    .split(/(?=\*\d+\r\n)/) // LAZY SOLUTION, FIX LATER
+    .map(c => ArrayResp(c));
 }
 
 function ArrayResp(command: string) {

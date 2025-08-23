@@ -1,5 +1,9 @@
 import { bulkString } from "../Resp/data-types";
 
-export function echo(value: string) {
+type Echo = {
+  value: string
+}
+
+export function echo({ value }: Echo) {
   return bulkString(value);
 }

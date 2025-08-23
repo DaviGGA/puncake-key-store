@@ -1,6 +1,18 @@
 import MemoryStorage from "../persistence";
 import { array } from "../Resp/data-types";
 
-export function lrange(key: string, start: number, end: number) {
-  return array(MemoryStorage.lrange(key, start, end));
+type Lrange = {
+  key: string,
+  start: string,
+  end: string
+}
+
+export function lrange({ key, start, end }: Lrange) {
+  return array(
+    MemoryStorage.lrange(
+      key, 
+      parseInt(start), 
+      parseInt(end)
+    )
+  );
 }

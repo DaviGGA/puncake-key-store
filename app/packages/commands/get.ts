@@ -1,6 +1,10 @@
 import MemoryStorage from "../persistence";
 import { bulkString } from "../Resp/data-types";
 
-export function get(key: string) {
+type Get = {
+  key: string
+}
+
+export function get({ key }: Get) {
   return bulkString(MemoryStorage.get(key) ?? "");
 }

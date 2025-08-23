@@ -9,90 +9,84 @@ import { lrange } from "./packages/commands/lrange";
 import { lpush } from "./packages/commands/lpush";
 import { llen } from "./packages/commands/llen";
 import { lpop } from "./packages/commands/lpop";
+import { blpop, blpopListeners } from "./packages/commands/blpop";
+import { eventEmitter } from "./packages/persistence/events";
 
-const server = net.createServer((socket: net.Socket) => {
+let socketId = 1;
+
+const server = net.createServer((socket: net.Socket & {socketId?: number}) => {
+
+  socket.socketId = socketId
+  socketId++;
 
   socket.on("data", data => {
-    const parsedInput = Resp(data.toString());
+    const commands = Resp(data.toString());
 
-    for (let i = 0; i < parsedInput.length; i++) {
-      const input = parsedInput[i];
+    commands.forEach(command => {
+      const commandName = command[0];
 
-      if (input === "PING") {
-        socket.write(ping());
-        continue 
+      if (commandName === "PING") 
+        return socket.write(ping());
+
+      if (commandName === "ECHO") 
+        return socket.write(echo({ value: command[1] }));
+
+      if (commandName === "GET")
+        return socket.write(get({ key: command[1] }));
+
+      if (commandName === "SET") {
+        return socket.write(set({
+          key: command[1],
+          value: command[2],
+          px: command[3]
+        }))
       }
 
-      if(input === "ECHO") {
-        const echoValue = parsedInput[i + 1];
-        socket.write(echo(echoValue));
-        i++;
-        continue;
+      if (commandName === "SET") {
+        return socket.write(set({
+          key: command[1],
+          value: command[2],
+          px: command[3]
+        }))
       }
 
-      if (input === "GET") {
-        const key = parsedInput[i + 1];
-        const value = get(key);
-        socket.write(value);
-        i++;
-        continue; 
+      if (commandName === "RPUSH") {
+        const [_, key, ...value] = command;
+        return socket.write(rpush({ key, value }));
       }
 
-      if (input === "SET") {
-        const key = parsedInput[i + 1];
-        const value = parsedInput[i + 2];
-        const hasPX = parsedInput[i + 3] === "px";
-        const expiryTime = hasPX ? 
-          parseInt(parsedInput[i + 4]) : 0;
-
-        const setResult = set(key, value, expiryTime);
-        socket.write(setResult);
-        
-        i += hasPX ? 3 : 1
-
-        continue; 
+      if (commandName === "LPUSH") {
+        const [_, key, ...value] = command;
+        return socket.write(lpush({ key, value }));
       }
 
-      if (input === "RPUSH") {
-        const key = parsedInput[i + 1];
-        const value = parsedInput.slice(i + 2);
-        socket.write(rpush(key, value));
-        i += 2;
+      if (commandName === "LRANGE") {
+        const [_, key, start, end] = command;
+        return socket.write(lrange({ key, start, end }))
       }
+      
+      if (commandName === "LLEN") 
+        return socket.write(llen({ key: command[1] }))
 
-      if (input === "LPUSH") {
-        const key = parsedInput[i + 1];
-        const value = parsedInput.slice(i + 2);
-        socket.write(lpush(key, value));
-        i += 2;
+      if (commandName === "LPOP") {
+        const[_, key, quantity] = command;
+        return socket.write(lpop({ key, quantity }));
       }
-
-      if (input === "LRANGE") {
-        const key = parsedInput[i + 1];
-        const start = parseInt(parsedInput[i + 2]);
-        const end = parseInt(parsedInput[i + 3]);
-        socket.write(lrange(key, start, end));
-        i += 3;
-      }
-
-      if (input === "LLEN") {
-        const key = parsedInput[i + 1];
-        socket.write(llen(key));
-        i++;
-      }
-
-      if (input === "LPOP") {
-        const key = parsedInput[i + 1];
-        const quantity = parsedInput[i + 2] ? parseInt(parsedInput[i + 2]) : 1;
-        console.log("QUANTITY", quantity)
-        socket.write(lpop(key, quantity));
-        i++;
-      }
-
-    }
-
+      
+      if (commandName === "BLPOP") {
+        const[_, key, timeout] = command;
+        blpop({ key, timeout, socketId: socket.socketId!})
+        .then(res => socket.write(res));
+        return
+      } 
+    })
   })
 
+  socket.on("close", () => {
+    const socketBlpopListener = blpopListeners.get(socket.socketId!);
+    if(!socketBlpopListener) return;
+    eventEmitter.off("ELEMENT_ADDED", socketBlpopListener);
+  })
 });
 
 

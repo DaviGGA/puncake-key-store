@@ -1,3 +1,5 @@
+import { eventEmitter } from "./events";
+
 type DbTypes = "string" | "list"
 
 type StringValue = { value: string, expiryTime: number, type: DbTypes}
@@ -31,7 +33,11 @@ function rpush(key: string, values: string[]) {
       type: "list"
     })
 
-    return values.length;
+    const valuesLength = values.length
+
+    eventEmitter.emit("ELEMENT_ADDED", key);
+
+    return valuesLength;
   }
 
   values.forEach(value => {
@@ -40,7 +46,12 @@ function rpush(key: string, values: string[]) {
   })
 
   db.set(key, result);
-  return result.length;
+
+  eventEmitter.emit("ELEMENT_ADDED", key);
+
+  const resultLength = result.length;
+  
+  return resultLength;
 }
 
 function lpush(key: string, values: string[]) {
@@ -53,7 +64,11 @@ function lpush(key: string, values: string[]) {
       type: "list"
     })
 
-    return values.length;
+    const valuesLength = values.length
+
+    eventEmitter.emit("ELEMENT_ADDED", key);
+
+    return valuesLength;
   }
 
   values.forEach(value => {
@@ -62,7 +77,12 @@ function lpush(key: string, values: string[]) {
   })
 
   db.set(key, result);
-  return result.length;
+
+  const resultLength = result.length;
+  
+  eventEmitter.emit("ELEMENT_ADDED", key);
+  
+  return resultLength;
 }
 
 function lrange(key: string, start: number, end: number) {
@@ -100,6 +120,8 @@ function llen(key: string) {
 
 function lpop(key: string, quantity: number) {
   const result = db.get(key) as ListValue | undefined;
+
+  console.log("LPOP", result)
 
   if (!result || result.length == 0) return [];
 
