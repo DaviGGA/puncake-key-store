@@ -11,6 +11,7 @@ import { llen } from "./packages/commands/llen";
 import { lpop } from "./packages/commands/lpop";
 import { blpop, blpopListeners } from "./packages/commands/blpop";
 import { eventEmitter } from "./packages/persistence/events";
+import { type } from "./packages/commands/type";
 
 let socketId = 1;
 
@@ -69,11 +70,15 @@ const server = net.createServer((socket: net.Socket & {socketId?: number}) => {
       
       if (commandName === "BLPOP") {
         const[_, key, timeout] = command;
-        console.log("COMMAND", command);
         blpop({ key, timeout, socketId: socket.socketId!})
         .then(res => socket.write(res));
         return
-      } 
+      }
+      
+      if (commandName === "TYPE") {
+        const [_, key] = command;
+        socket.write(type({key}));
+      }
     })
   })
 

@@ -2,8 +2,8 @@ import { eventEmitter } from "./events";
 
 type DbTypes = "string" | "list"
 
-type StringValue = { value: string, expiryTime: number, type: DbTypes}
-type ListValue = {list: StringValue[], length: number}
+type StringValue = { value: string, expiryTime: number, type: "string"}
+type ListValue = {list: StringValue[], length: number, type: "list"}
 
 type Values = StringValue | ListValue
 
@@ -21,6 +21,11 @@ function get(key: string) {
 
   return result.expiryTime >= Date.now() ?
     result.value : undefined
+}
+
+function getType(key: string) {
+  const result = db.get(key);
+  return result?.type;
 }
 
 function rpush(key: string, values: string[]) {
@@ -158,7 +163,8 @@ const MemoryStorage = {
   lpush,
   lrange,
   llen,
-  lpop
+  lpop,
+  getType
 }
 
 export default MemoryStorage;
