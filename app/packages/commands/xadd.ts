@@ -1,3 +1,4 @@
+import MemoryStorage from "../persistence";
 import { bulkString } from "../Resp/data-types";
 
 type XAdd = {
@@ -14,6 +15,8 @@ export function xAdd({ key, id , entriesArray }: XAdd) {
   for (let i = 0; i < entriesArray.length; i+= 2) {
     entries[entriesArray[i]] = entriesArray[i + 1];
   }
+
+  MemoryStorage.xadd(key, id, entries);
 
   return bulkString(id);
 }

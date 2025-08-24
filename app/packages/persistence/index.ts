@@ -5,7 +5,7 @@ type StringValue = { value: string, expiryTime: number, type: "string"}
 type ListValue = {list: StringValue[], length: number, type: "list"}
 
 type StreamMetaData = { id: string }
-type StreamValue = Record<string, string> & 
+type StreamValue = {entries: Entries} & 
   {type: "stream", _metadata: StreamMetaData }
 
 type Values = StringValue | ListValue | StreamValue
@@ -150,7 +150,7 @@ function lpop(key: string, quantity: number) {
 }
 
 function xadd(key: string, id: string, entries: Entries) {
-  
+  db.set(key, createXAddValue(id, entries))
 }
 
 
@@ -162,6 +162,9 @@ function flush() {
 const createStringValue = (value: string, expiryTime: number = 0): StringValue =>
   ({value, expiryTime: expiryTime && Date.now() + expiryTime, type: "string"})
 
+const createXAddValue = (id: string, entries: Entries): StreamValue =>
+  ({entries: entries, _metadata: { id }, type: "stream"})
+
 const MemoryStorage = { 
   set, 
   get, 
@@ -171,6 +174,7 @@ const MemoryStorage = {
   lrange,
   llen,
   lpop,
+  xadd,
   getType
 }
 
