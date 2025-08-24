@@ -1,11 +1,14 @@
+import type { Entries } from "../commands/xadd";
 import { eventEmitter } from "./events";
-
-type DbTypes = "string" | "list"
 
 type StringValue = { value: string, expiryTime: number, type: "string"}
 type ListValue = {list: StringValue[], length: number, type: "list"}
 
-type Values = StringValue | ListValue
+type StreamMetaData = { id: string }
+type StreamValue = Record<string, string> & 
+  {type: "stream", _metadata: StreamMetaData }
+
+type Values = StringValue | ListValue | StreamValue
 
 const db: Map<string, Values> = new Map();
 
@@ -144,6 +147,10 @@ function lpop(key: string, quantity: number) {
   }
 
   return shiftedValues.map(v => v.value);
+}
+
+function xadd(key: string, id: string, entries: Entries) {
+  
 }
 
 

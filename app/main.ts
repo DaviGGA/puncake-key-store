@@ -12,6 +12,7 @@ import { lpop } from "./packages/commands/lpop";
 import { blpop, blpopListeners } from "./packages/commands/blpop";
 import { eventEmitter } from "./packages/persistence/events";
 import { type } from "./packages/commands/type";
+import { xAdd } from "./packages/commands/xadd";
 
 let socketId = 1;
 
@@ -78,6 +79,11 @@ const server = net.createServer((socket: net.Socket & {socketId?: number}) => {
       if (commandName === "TYPE") {
         const [_, key] = command;
         socket.write(type({key}));
+      }
+
+      if (commandName === "XADD") {
+        const [_, key, id, ...entriesArray] = command;
+        socket.write(xAdd({key, id, entriesArray}))
       }
     })
   })
