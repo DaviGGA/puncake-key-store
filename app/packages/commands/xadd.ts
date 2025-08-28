@@ -37,12 +37,25 @@ export function xAdd({ key, id , entriesArray }: XAdd) {
 function generateId(id: string, topId: string | undefined) {
   const isFully = id === "*";
 
-  if (isFully) return "1-1";
+  if (isFully) return generateFully(id, topId);
 
   const millisecondsTime = parseInt(id.split("-")[0]);
   
-  if(!topId) return `${millisecondsTime}-0`
+  if(!topId) 
+    return generateFirstId(millisecondsTime);
   
+  return generatePartialId(millisecondsTime, topId);
+}
+
+function generateFully(id: string, topId: string | undefined) {
+  return "1-1"
+}
+
+function generateFirstId(millisecondsTime: number) {
+  return `${millisecondsTime}-${millisecondsTime === 0 ? 1 : 0}`
+}
+
+function generatePartialId(millisecondsTime: number, topId: string) {
   const decomposedTopId = decomposeId(topId);
 
   const sequenceNumber = decomposedTopId.millisecondsTime === millisecondsTime ?
