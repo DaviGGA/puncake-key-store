@@ -15,3 +15,7 @@ export function integer(value: string | number) {
 export function array(values: string[]) {
   return `*${values.length}\r\n${values.map(bulkString).join("")}`
 }
+
+export function simpleError(message: string) {
+  return `-Error ${message}\r\n`
+}
