@@ -37,7 +37,7 @@ export function xAdd({ key, id , entriesArray }: XAdd) {
 function generateId(id: string, topId: string | undefined) {
   const isFully = id === "*";
 
-  if (isFully) return generateFully(id, topId);
+  if (isFully) return generateFully(topId);
 
   const millisecondsTime = parseInt(id.split("-")[0]);
   
@@ -47,8 +47,12 @@ function generateId(id: string, topId: string | undefined) {
   return generatePartialId(millisecondsTime, topId);
 }
 
-function generateFully(id: string, topId: string | undefined) {
-  return "1-1"
+function generateFully(topId: string | undefined) {
+  const nowInMiliseconds = Date.now();
+  if(!topId) return `${nowInMiliseconds}-0`;
+  const { millisecondsTime } = decomposeId(topId);
+  return `${millisecondsTime === nowInMiliseconds ? 
+    nowInMiliseconds : nowInMiliseconds + 1}-0`
 }
 
 function generateFirstId(millisecondsTime: number) {
