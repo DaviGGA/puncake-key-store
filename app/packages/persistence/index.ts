@@ -165,7 +165,7 @@ function xadd(key: string, id: string, entries: Entries) {
 function getTopStream(key: string) {
   const streamValue = db.get(key) as StreamValue | undefined;
   return streamValue ? 
-    streamValue.entries[streamValue.entries.length] : null;
+    streamValue.entries[streamValue.entries.length - 1] : null;
 }
 
 function flush() {

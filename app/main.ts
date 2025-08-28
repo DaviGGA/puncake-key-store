@@ -37,7 +37,6 @@ const server = net.createServer((socket: net.Socket & {socketId?: number}) => {
         return socket.write(get({ key: command[1] }));
 
       if (commandName === "SET") {
-        console.log("SET", command)
         return socket.write(set({
           key: command[1],
           value: command[2],
@@ -96,6 +95,6 @@ const server = net.createServer((socket: net.Socket & {socketId?: number}) => {
 });
 
 
-server.listen(6379, "127.0.0.1");
+server.listen(6380, "127.0.0.1");
 
 

@@ -55,7 +55,13 @@ function validateId(id: string, lastId: string) {
   const sequenceIsEqualOrSmaller =
     decomposedId.sequenceNumber <= decomposedTopId.sequenceNumber
 
-  if (timeIsEqualOrSmaller || sequenceIsEqualOrSmaller) 
+  const timeIsEqual =
+    decomposedId.millisecondsTime == decomposedTopId.millisecondsTime
+  
+  const errorCondition = timeIsEqual ?
+    sequenceIsEqualOrSmaller : timeIsEqualOrSmaller
+
+  if (errorCondition) 
     return "ERR The ID specified in XADD is equal or smaller than the target stream top item"
 }
 

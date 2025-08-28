@@ -23,7 +23,6 @@ export async function blpop({key, timeout, socketId}: Blpop): Promise<string> {
 
   const resultPromise: Promise<string> = new Promise(resolve => {
     function onElementAdded(addedKey: string) {
-      console.log("chamando")
       if (addedKey != key) return;
 
       const lpopResult = MemoryStorage.lpop(key, 1);
