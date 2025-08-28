@@ -11,7 +11,7 @@ export type Entries = Record<string, string>
 
 export function xAdd({ key, id , entriesArray }: XAdd) {
   if (id === "0-0")
-    return simpleError("ERR The ID specified in XADD must be greater than 0-0")
+    return simpleError("The ID specified in XADD must be greater than 0-0")
 
 
   const topStream = MemoryStorage.getTopStream(key);
@@ -62,6 +62,6 @@ function validateId(id: string, lastId: string) {
     sequenceIsEqualOrSmaller : timeIsEqualOrSmaller
 
   if (errorCondition) 
-    return "ERR The ID specified in XADD is equal or smaller than the target stream top item"
+    return "The ID specified in XADD is equal or smaller than the target stream top item"
 }
 
