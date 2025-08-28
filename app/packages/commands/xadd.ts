@@ -13,7 +13,6 @@ export function xAdd({ key, id , entriesArray }: XAdd) {
   if (id === "0-0")
     return simpleError("The ID specified in XADD must be greater than 0-0")
 
-
   const topStream = MemoryStorage.getTopStream(key);
 
   if(topStream) {
@@ -21,15 +20,35 @@ export function xAdd({ key, id , entriesArray }: XAdd) {
     if (error) return simpleError(error);
   }
 
+  const newId = id.includes("*") ?
+    generateId(id, topStream?.id)  : id
+
   let entries: Entries = {};
 
   for (let i = 0; i < entriesArray.length; i+= 2) {
     entries[entriesArray[i]] = entriesArray[i + 1];
   }
 
-  MemoryStorage.xadd(key, id, entries);
+  MemoryStorage.xadd(key, newId, entries);
 
-  return bulkString(id);
+  return bulkString(newId);
+}
+
+function generateId(id: string, topId: string | undefined) {
+  const isFully = id === "*";
+
+  if (isFully) return "1-1";
+
+  const millisecondsTime = parseInt(id.split("-")[0]);
+  
+  if(!topId) return `${millisecondsTime}-0`
+  
+  const decomposedTopId = decomposeId(topId);
+
+  const sequenceNumber = decomposedTopId.millisecondsTime === millisecondsTime ?
+    decomposedTopId.sequenceNumber + 1 : 0 
+
+  return `${millisecondsTime}-${sequenceNumber}`
 }
 
 type DecomposedId = {
