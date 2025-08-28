@@ -17,5 +17,5 @@ export function array(values: string[]) {
 }
 
 export function simpleError(message: string) {
-  return `-Error ${message}\r\n`
+  return `-ERR ${message}\r\n`
 }
