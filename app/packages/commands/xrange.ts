@@ -1,5 +1,5 @@
 import MemoryStorage from "../persistence"
-import { array } from "../Resp/data-types";
+import { array, nullArray } from "../Resp/data-types";
 import { decomposeId } from "./xadd";
 
 type XRange = {
@@ -11,18 +11,22 @@ type XRange = {
 export function xRange({ key, start, end}: XRange) {
   const streams = MemoryStorage.getStreams(key);
 
-  if(!streams) return "";
+  if(!streams) return nullArray();
+
+  if(streams.entries.length === 0) return nullArray();
 
   const startIndex = streams.entries
     .findIndex(s => idIsGreaterOrEqual(s[0], start))
   const endIndex = streams.entries
     .findIndex(s => idIsGreaterOrEqual(s[0], end))
 
-  return array(
-    streams.entries.slice(
+  const rangeEntries = streams.entries.slice(
     startIndex, 
     endIndex !== 1 ? endIndex + 1 : streams.entries.length
-  ) as string[][])
+  ) as string[][]
+
+  return rangeEntries.length > 0 ? 
+    array(rangeEntries) : nullArray()
 }
 
 const idIsGreaterOrEqual = (firstId: string, secondId: string) =>
