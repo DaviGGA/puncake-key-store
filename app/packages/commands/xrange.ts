@@ -28,11 +28,6 @@ export function xRange({ key, start, end}: XRange) {
 const idIsGreaterOrEqual = (firstId: string, secondId: string) =>
   compareIds(firstId, secondId) >= 0;
 
-const idIsLessOrEqual = (firstId: string, secondId: string) =>
-  compareIds(firstId, secondId) <= 0;
-
-
-
 function compareIds(firstId: string, secondId: string) {
   const first = decomposeId(firstId)
   const second = decomposeId(secondId);
@@ -46,3 +41,4 @@ function compareIds(firstId: string, secondId: string) {
   return 0;
 }
 
+//retest
