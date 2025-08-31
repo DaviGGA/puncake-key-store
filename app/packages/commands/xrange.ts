@@ -1,4 +1,4 @@
-import MemoryStorage from "../persistence"
+import MemoryStorage, { type Stream, type StreamValue } from "../persistence"
 import { array, nullArray } from "../Resp/data-types";
 import { decomposeId } from "./xadd";
 
@@ -15,18 +15,28 @@ export function xRange({ key, start, end}: XRange) {
 
   if(streams.entries.length === 0) return nullArray();
 
-  const startIndex = streams.entries
-    .findIndex(s => idIsGreaterOrEqual(s[0], start))
-  const endIndex = streams.entries
-    .findIndex(s => idIsGreaterOrEqual(s[0], end))
+  const startIndex = getStartIndex(streams, start);
+  const endIndex = getFinishIndex(streams, end);
 
   const rangeEntries = streams.entries.slice(
     startIndex, 
-    endIndex !== 1 ? endIndex + 1 : streams.entries.length
+    endIndex
   ) as string[][]
 
   return rangeEntries.length > 0 ? 
     array(rangeEntries) : nullArray()
+}
+
+function getStartIndex(streams: StreamValue, start: string) {
+  return start !== "-" ? 
+  streams.entries.findIndex(s => idIsGreaterOrEqual(s[0], start)) : 0
+}
+
+function getFinishIndex(streams: StreamValue, end: string) {
+  const index = end !== "+" ? 
+  streams.entries.findIndex(s => idIsGreaterOrEqual(s[0], end)) : 
+  streams.entries.length
+  return index !== -1 ? index + 1 : streams.entries.length
 }
 
 const idIsGreaterOrEqual = (firstId: string, secondId: string) =>
@@ -45,4 +55,3 @@ function compareIds(firstId: string, secondId: string) {
   return 0;
 }
 
-//retest
