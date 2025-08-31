@@ -12,8 +12,13 @@ export function integer(value: string | number) {
   return `:${value}\r\n`
 }
 
-export function array(values: string[]) {
-  return `*${values.length}\r\n${values.map(bulkString).join("")}`
+export function array(values: (string | string[])[]): string {
+  return `*${values.length}\r\n${values.map(toBulkOrArray).join("")}`
+}
+
+function toBulkOrArray(value: string | string[]) {
+  return typeof value === "string" ?
+    bulkString(value) : array(value)
 }
 
 export function simpleError(message: string) {

@@ -13,6 +13,7 @@ import { blpop, blpopListeners } from "./packages/commands/blpop";
 import { eventEmitter } from "./packages/persistence/events";
 import { type } from "./packages/commands/type";
 import { xAdd } from "./packages/commands/xadd";
+import { xRange } from "./packages/commands/xrange";
 
 let socketId = 1;
 
@@ -82,7 +83,12 @@ const server = net.createServer((socket: net.Socket & {socketId?: number}) => {
 
       if (commandName === "XADD") {
         const [_, key, id, ...entriesArray] = command;
-        socket.write(xAdd({key, id, entriesArray}))
+        socket.write(xAdd({key, id, entries: entriesArray}))
+      }
+
+      if (commandName === "XRANGE") {
+        const [_, key, start, end] = command;
+        socket.write(xRange({ key, start, end }))
       }
     })
   })

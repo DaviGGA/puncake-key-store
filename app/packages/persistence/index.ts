@@ -1,10 +1,13 @@
-import type { Entries } from "../commands/xadd";
+
 import { eventEmitter } from "./events";
 
 type StringValue = { value: string, expiryTime: number, type: "string"}
 type ListValue = {list: StringValue[], length: number, type: "list"}
 
-type StreamValue = {entries: (Entries &  { id: string })[]} &
+type id = string
+type Entries = string[]
+type Stream = [id, string[]]
+export type StreamValue = {entries: Stream[]} &
   {type: "stream"}
 
 type Values = StringValue | ListValue | StreamValue
@@ -152,13 +155,17 @@ function xadd(key: string, id: string, entries: Entries) {
   const streamValue = db.get(key) as StreamValue | undefined;
 
   if(!streamValue) {
-    db.set(key, {
+    return db.set(key, {
       type: "stream",
-      entries: [{ ...entries, id }]
+      entries: [[id, entries]]
     })
   }
 
-  streamValue?.entries.push({ ...entries, id })
+  streamValue.entries.push([id, entries])
+}
+
+function getStreams(key: string) {
+  return db.get(key) as StreamValue ?? null;
 }
 
 
@@ -187,7 +194,8 @@ const MemoryStorage = {
   lpop,
   xadd,
   getType,
-  getTopStream
+  getTopStream,
+  getStreams
 }
 
 export default MemoryStorage;

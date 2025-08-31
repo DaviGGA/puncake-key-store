@@ -4,30 +4,24 @@ import { bulkString, simpleError } from "../Resp/data-types";
 type XAdd = {
   key: string,
   id: string,
-  entriesArray: string[]
+  entries: string[]
 }
 
-export type Entries = Record<string, string>
-
-export function xAdd({ key, id , entriesArray }: XAdd) {
+export function xAdd({ key, id , entries }: XAdd) {
   if (id === "0-0")
     return simpleError("The ID specified in XADD must be greater than 0-0")
 
   const topStream = MemoryStorage.getTopStream(key);
 
   if(topStream) {
-    const error = validateId(id, topStream.id);
+    const error = validateId(id, topStream[0]);
     if (error) return simpleError(error);
   }
 
+  const topId = topStream ? topStream[0] : undefined
+
   const newId = id.includes("*") ?
-    generateId(id, topStream?.id)  : id
-
-  let entries: Entries = {};
-
-  for (let i = 0; i < entriesArray.length; i+= 2) {
-    entries[entriesArray[i]] = entriesArray[i + 1];
-  }
+    generateId(id, topId)  : id
 
   MemoryStorage.xadd(key, newId, entries);
 
@@ -68,12 +62,12 @@ function generatePartialId(millisecondsTime: number, topId: string) {
   return `${millisecondsTime}-${sequenceNumber}`
 }
 
-type DecomposedId = {
+export type DecomposedId = {
   millisecondsTime: number,
   sequenceNumber: number
 }
 
-function decomposeId(id: string): DecomposedId {
+export function decomposeId(id: string): DecomposedId {
   const splittedId = id.split("-");
   return {
     millisecondsTime: parseInt(splittedId[0]),
