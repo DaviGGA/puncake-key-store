@@ -1,6 +1,6 @@
 import MemoryStorage from "../persistence";
 import { eventEmitter } from "../persistence/events";
-import { array, bulkString } from "../Resp/data-types";
+import { array } from "../Resp/data-types";
 
 type Blpop = {
   key: string,
@@ -49,7 +49,7 @@ export async function blpop({key, timeout, socketId}: Blpop): Promise<string> {
       if(!listener) return;
       blpopListeners.delete(socketId);
       eventEmitter.off("ELEMENT_ADDED", listener); 
-      resolve(bulkString(""))
+      resolve(array([]))
     }, parsedTimeout)
   })
 

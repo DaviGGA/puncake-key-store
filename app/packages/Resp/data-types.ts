@@ -13,7 +13,7 @@ export function integer(value: string | number) {
 }
 
 export function array(values: (string | string[])[]): string {
-  return `*${values.length}\r\n${values.map(toBulkOrArray).join("")}`
+  return `*${values.length > 0 ? values.length : -1}\r\n${values.map(toBulkOrArray).join("")}`
 }
 
 function toBulkOrArray(value: string | string[]) {
