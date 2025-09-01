@@ -1,4 +1,4 @@
-import MemoryStorage, { type Stream, type StreamValue } from "../persistence"
+import MemoryStorage, { type StreamValue } from "../persistence"
 import { array, nullArray } from "../Resp/data-types";
 import { decomposeId } from "./xadd";
 
