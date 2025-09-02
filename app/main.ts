@@ -1,9 +1,6 @@
 import * as net from "net";
-import { Resp } from "./packages/Resp"
-import { ping } from "./packages/commands/ping";
-import { echo } from "./packages/commands/echo";
-import { get } from "./packages/commands/get";
-import { set } from "./packages/commands/set";
+import { Resp } from "./packages/common/Resp"
+import Base from "./packages/base";
 import { rpush } from "./packages/commands/rpush";
 import { lrange } from "./packages/commands/lrange";
 import { lpush } from "./packages/commands/lpush";
@@ -29,16 +26,16 @@ const server = net.createServer((socket: net.Socket & {socketId?: number}) => {
       const commandName = command[0];
 
       if (commandName === "PING") 
-        return socket.write(ping());
+        return socket.write(Base.ping());
 
       if (commandName === "ECHO") 
-        return socket.write(echo({ value: command[1] }));
+        return socket.write(Base.echo({ value: command[1] }));
 
       if (commandName === "GET")
-        return socket.write(get({ key: command[1] }));
+        return socket.write(Base.get({ key: command[1] }));
 
       if (commandName === "SET") {
-        return socket.write(set({
+        return socket.write(Base.set({
           key: command[1],
           value: command[2],
           px: command[3],

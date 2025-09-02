@@ -1,5 +1,5 @@
 import MemoryStorage from "../persistence";
-import { array, bulkString } from "../Resp/data-types";
+import { array, bulkString } from "../common/Resp/data-types";
 
 type Lpop = {
   key: string,

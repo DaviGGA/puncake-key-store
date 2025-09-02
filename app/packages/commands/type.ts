@@ -1,5 +1,5 @@
 import MemoryStorage from "../persistence";
-import { simpleString } from "../Resp/data-types";
+import { simpleString } from "../common/Resp/data-types";
 
 type Type = {
   key: string

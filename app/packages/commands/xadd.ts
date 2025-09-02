@@ -1,5 +1,5 @@
 import MemoryStorage from "../persistence";
-import { bulkString, simpleError } from "../Resp/data-types";
+import { bulkString, simpleError } from "../common/Resp/data-types";
 
 type XAdd = {
   key: string,

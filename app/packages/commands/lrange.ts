@@ -1,5 +1,5 @@
 import MemoryStorage from "../persistence";
-import { array } from "../Resp/data-types";
+import { array } from "../common/Resp/data-types";
 
 type Lrange = {
   key: string,

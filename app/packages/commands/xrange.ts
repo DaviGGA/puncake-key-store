@@ -1,5 +1,5 @@
 import MemoryStorage, { type StreamValue } from "../persistence"
-import { array, nullArray } from "../Resp/data-types";
+import { array, nullArray } from "../common/Resp/data-types";
 import { decomposeId } from "./xadd";
 
 type XRange = {

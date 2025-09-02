@@ -1,6 +1,6 @@
 import MemoryStorage from "../persistence";
 import { eventEmitter } from "../persistence/events";
-import { array, nullArray } from "../Resp/data-types";
+import { array, nullArray } from "../common/Resp/data-types";
 
 type Blpop = {
   key: string,

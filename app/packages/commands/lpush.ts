@@ -1,5 +1,5 @@
 import MemoryStorage from "../persistence";
-import { integer } from "../Resp/data-types";
+import { integer } from "../common/Resp/data-types";
 
 type Rpush = {
   key: string,

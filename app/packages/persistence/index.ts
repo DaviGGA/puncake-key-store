@@ -14,20 +14,6 @@ type Values = StringValue | ListValue | StreamValue
 
 const db: Map<string, Values> = new Map();
 
-function set(key: string, value: string, expiryTime: number) {
-  db.set(key, createStringValue(value, expiryTime))
-}
-
-function get(key: string) {
-  const result = db.get(key) as StringValue | undefined;
-
-  if(!result) return undefined;
-  if(result.expiryTime == 0) return result.value;
-
-  return result.expiryTime >= Date.now() ?
-    result.value : undefined
-}
-
 function getType(key: string) {
   const result = db.get(key);
   return result?.type;
@@ -184,8 +170,6 @@ const createStringValue = (value: string, expiryTime: number = 0): StringValue =
 
 
 const MemoryStorage = { 
-  set, 
-  get, 
   flush, 
   rpush,
   lpush,

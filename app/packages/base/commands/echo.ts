@@ -1,4 +1,4 @@
-import { bulkString } from "../Resp/data-types";
+import { bulkString } from "../../common/Resp/data-types";
 
 type Echo = {
   value: string
